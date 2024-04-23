@@ -1,0 +1,14 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\celso\\documents\\projetos pessoais\\lidiorepository\\github\\fps_shooter-unreal\\fps_shooter\\source\\fps_shooter\\fps_shooter.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\users\\celso\\documents\\projetos pessoais\\lidiorepository\\github\\fps_shooter-unreal\\fps_shooter\\intermediate\\build\\win64\\x64\\fps_shootereditor\\development\\engine\\sharedpch.engine.cpp20.h.pch",
+        "Includes": [
+            "c:\\users\\celso\\documents\\projetos pessoais\\lidiorepository\\github\\fps_shooter-unreal\\fps_shooter\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\fps_shooter\\definitions.fps_shooter.h",
+            "c:\\users\\celso\\documents\\projetos pessoais\\lidiorepository\\github\\fps_shooter-unreal\\fps_shooter\\source\\fps_shooter\\fps_shooter.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
