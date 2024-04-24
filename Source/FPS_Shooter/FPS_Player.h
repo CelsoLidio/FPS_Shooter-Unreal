@@ -32,8 +32,8 @@ public:
 	UCameraComponent* CameraFPS;
 
 	//Mesh Hands//
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Body")
-	USkeletalMeshComponent* HandsMesh;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Body")
+	//USkeletalMeshComponent* HandsMesh;
 
 	//Actions player input//
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")

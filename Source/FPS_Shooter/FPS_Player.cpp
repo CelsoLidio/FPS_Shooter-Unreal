@@ -16,9 +16,9 @@ AFPS_Player::AFPS_Player()
 
 
 	//Criando Mesh para os braços
-	HandsMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("HandsMesh"));
-	HandsMesh->SetupAttachment(CameraFPS);
-	HandsMesh->SetRelativeLocationAndRotation(FVector(50.0f, 0.0f, -160.0f), FRotator(0.0f, -90.0f,0.0f));
+	//HandsMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("HandsMesh"));
+	//HandsMesh->SetupAttachment(CameraFPS);
+	//HandsMesh->SetRelativeLocationAndRotation(FVector(50.0f, 0.0f, -160.0f), FRotator(0.0f, -90.0f,0.0f));
 
 
 

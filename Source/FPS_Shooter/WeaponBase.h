@@ -4,7 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "ProjectileBase.h"
 #include "WeaponBase.generated.h"
+
+
 
 /**
  * 
@@ -21,9 +24,13 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Mesh")
 	USkeletalMesh* weaponMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	UAnimBlueprint* weaponAnimBP;
+	
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
-	UStaticMesh* weaponProjectile;
+	TSubclassOf<AProjectileBase> weaponProjectile;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting Configuration")
 	float fireRate;
@@ -35,7 +42,11 @@ public:
 	int countBullet;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting Configuration")
-	float cooldownShoot;
+	FString socketSpawnPoint;
+
+
+
+
 
 	
 

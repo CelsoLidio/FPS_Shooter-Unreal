@@ -8,5 +8,6 @@ UWeaponBase::UWeaponBase()
 	fireRate = 0.5f;
 	reloadingTime = 1.2f;
 	countBullet = 10;
-	cooldownShoot = 0.25f;
+	socketSpawnPoint = "socketSpawnBullet";
+
 }
