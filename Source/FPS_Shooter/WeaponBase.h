@@ -33,12 +33,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 	TSubclassOf<AProjectileBase> weaponProjectile;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	float drawWeaponTime;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting Configuration")
 	float fireRate;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting Configuration")
-	float reloadingTime;
-
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting Configuration")
 	int maxCountBullet;

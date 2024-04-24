@@ -34,44 +34,13 @@ void UWeaponComponent::BeginPlay()
 		{
 			eachWeapon.GetDefaultObject()->countBullet = eachWeapon.GetDefaultObject()->maxCountBullet;
 		}
-
+		//isChangingWeapon = true;
 		ChangeWeapon(listWeapons[0]);
 	}
 
 
 }
 
-void UWeaponComponent::ChangeWeapon(TSubclassOf<UWeaponBase> newWeapon)
-{
-	
-	
-	if (!IsValid(newWeapon.GetDefaultObject()))
-	{
-		print("[ERROR - ChangeWeapon] New Weapon Invaliid...");
-		return;
-	}
-
-	currentWeapon = newWeapon.GetDefaultObject();
-
-	if (IsValid(currentWeapon->weaponMesh))
-	{
-		SetSkeletalMeshAsset(currentWeapon->weaponMesh);
-	}
-	if (IsValid(currentWeapon->weaponAnimBP))
-	{
-		SetAnimInstanceClass(currentWeapon->weaponAnimBP->GetAnimBlueprintGeneratedClass());
-	}
-	
-	clockTimerShooting = currentWeapon->fireRate;
-	
-	if (isReloading)
-	{
-		StopReloading();
-	}
-
-	printf("weapon name = %s", *currentWeapon->weaponMesh->GetName());
-
-}
 
 UWeaponBase* UWeaponComponent::GetCurrentWeapon()
 {
@@ -85,10 +54,12 @@ void UWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	clockTimerShooting -= DeltaTime;
 }
 
+//Shooting Area//
+
 void UWeaponComponent::Shooting()
 {
 
-	if (!IsValid(currentWeapon) || isReloading)
+	if (!IsValid(currentWeapon) || isReloading || isChangingWeapon)
 	{
 		return;
 	}
@@ -130,9 +101,77 @@ void UWeaponComponent::Fire()
 	
 }
 
+//Changing Weapon Area//
+
+void UWeaponComponent::ChangeWeapon(TSubclassOf<UWeaponBase> newWeapon)
+{
+
+
+	if (!IsValid(newWeapon.GetDefaultObject()))
+	{
+		print("[ERROR - ChangeWeapon] New Weapon Invaliid...");
+		return;
+	}
+
+
+
+	if (!GetWorld()->GetTimerManager().IsTimerActive(handleChangingWeapon))
+	{
+		if (isReloading)
+		{
+			StopReloading();
+
+		}
+
+		
+		currentWeapon = newWeapon.GetDefaultObject();
+		DrawWeapon();
+	}
+
+	
+	printf("weapon name = %s", *currentWeapon->weaponMesh->GetName());
+
+}
+
+void UWeaponComponent::DrawWeapon()
+{
+	
+	if (!GetWorld()->GetTimerManager().IsTimerActive(handleChangingWeapon))
+	{
+
+		if (IsValid(currentWeapon->weaponMesh))
+		{
+			SetSkeletalMeshAsset(currentWeapon->weaponMesh);
+		}
+		if (IsValid(currentWeapon->weaponAnimBP))
+		{
+			SetAnimInstanceClass(currentWeapon->weaponAnimBP->GetAnimBlueprintGeneratedClass());
+		}
+
+		clockTimerShooting = currentWeapon->fireRate;
+		isChangingWeapon = true;
+
+		GetWorld()->GetTimerManager().SetTimer(handleChangingWeapon, this, &UWeaponComponent::DrawWeapon, currentWeapon->drawWeaponTime);
+
+		print("DRAW WEAPON");
+	}
+	else
+	{
+		isChangingWeapon = false;
+		GetWorld()->GetTimerManager().ClearTimer(handleChangingWeapon);
+		print("FINISHED CHANGING");
+	}
+	
+}
+
+
+
+//Reloading Area//
+
 void UWeaponComponent::Reloading()
 {
-	if (!IsValid(currentWeapon)) 
+
+	if (!IsValid(currentWeapon) || isChangingWeapon)
 	{
 		return;
 	}
@@ -173,5 +212,6 @@ void UWeaponComponent::StopReloading()
 	isReloading = false;
 	GetWorld()->GetTimerManager().ClearTimer(handleReload);
 }
+
 
 

@@ -26,15 +26,24 @@ class FPS_SHOOTER_API UWeaponComponent : public USkeletalMeshComponent
 
 private:
 
+	//Weapon Variables//
 	UWeaponBase* currentWeapon;
+	FTimerHandle handleChangingWeapon;
+
+	//Shooting Variables//
 	float clockTimerShooting;
+	
+	
+	//Realoading Variables//
 	FTimerHandle handleReload;
 	bool isReloading;
+
+
 public:
 
-	//Reloading Weapon//
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reload")
-	bool isTradeWeapon;
+	//Weapon Variables//
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	bool isChangingWeapon;
 	
 
 
@@ -56,10 +65,15 @@ public:
 
 private:
 
+	//Shooting Methods//
 	void Shooting();
 	void Fire();
 	void Reloading();
 	void StopReloading();
+
+	//Weapon Methods//
+	void DrawWeapon();
+
 
 protected:
 
@@ -71,6 +85,7 @@ public:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	//Weapon Methods Public BP//
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void ChangeWeapon(TSubclassOf<UWeaponBase> newWeapon);
 

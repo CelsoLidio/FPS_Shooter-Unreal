@@ -7,7 +7,7 @@
 UWeaponBase::UWeaponBase()
 {
 	fireRate = 0.5f;
-	reloadingTime = 1.2f;
+	drawWeaponTime = 1.0f;
 	maxCountBullet = 10;
 	socketSpawnPoint = "socketSpawnBullet";
 

@@ -68,7 +68,7 @@ public:
 	//Actions Method//
 	void MovementPlayer(const FInputActionValue& valueInput);
 	void LookPlayer(const FInputActionValue& valueInput);
-	void TradeWeapon(const FInputActionValue& valueInput);
+	void SelectWeapon(const FInputActionValue& valueInput);
 
 
 private:

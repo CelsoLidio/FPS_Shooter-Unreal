@@ -17,7 +17,7 @@ AFPS_Player::AFPS_Player()
 
 	weaponComponentPlayer = CreateDefaultSubobject<UWeaponComponent>(TEXT("WeaponPlayer"));
 	weaponComponentPlayer->SetupAttachment(CameraFPS);
-	weaponComponentPlayer->SetRelativeLocationAndRotation(FVector(50.0f, 0.0f, -160.0f), FRotator(0.0, 0.0, -90.0f));
+	weaponComponentPlayer->SetRelativeLocationAndRotation(FVector(50.0f, 0.0f, -160.0f), FRotator(0.0, -90.0, 0.0f));
 
 	//Init Variables//
 	lookSensibility = 70.0f;
@@ -51,7 +51,7 @@ void AFPS_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	{
 		enhancedInput->BindAction(MovementAction, ETriggerEvent::Triggered, this, &AFPS_Player::MovementPlayer);
 		enhancedInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &AFPS_Player::LookPlayer);
-		enhancedInput->BindAction(WeaponChangeAction, ETriggerEvent::Started, this, &AFPS_Player::TradeWeapon);
+		enhancedInput->BindAction(WeaponChangeAction, ETriggerEvent::Started, this, &AFPS_Player::SelectWeapon);
 	}
 
 
@@ -84,7 +84,7 @@ void AFPS_Player::LookPlayer(const FInputActionValue& valueInput)
 	
 }
 
-void AFPS_Player::TradeWeapon(const FInputActionValue& valueInput)
+void AFPS_Player::SelectWeapon(const FInputActionValue& valueInput)
 {
 	
 	int idxWeapon = 0;
