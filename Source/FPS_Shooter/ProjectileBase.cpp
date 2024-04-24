@@ -27,6 +27,7 @@ AProjectileBase::AProjectileBase()
 	projectileMovement->ProjectileGravityScale = 0.0f;
 	projectileMovement->InitialSpeed = projectileSpeed;
 	projectileMovement->MaxSpeed = projectileSpeed;
+	SetLifeSpan(2.0f);
 
 }
 
@@ -43,6 +44,6 @@ void AProjectileBase::BeginPlay()
 void AProjectileBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 }
 
