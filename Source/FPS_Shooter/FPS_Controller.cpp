@@ -7,10 +7,12 @@ void AFPS_Controller::BeginPlay()
 {
 	Super::BeginPlay();
 
-
+	
 	if (UEnhancedInputLocalPlayerSubsystem* playerSubSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
+		subsystemController = playerSubSystem;
 		playerSubSystem->AddMappingContext(PlayerMappingInput, 0);
+		
 	}
 	
 

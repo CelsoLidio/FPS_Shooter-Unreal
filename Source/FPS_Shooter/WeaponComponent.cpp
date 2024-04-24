@@ -24,12 +24,17 @@ void UWeaponComponent::BeginPlay()
 		if (UEnhancedInputComponent* enhancedInput = CastChecked<UEnhancedInputComponent>(playerController->InputComponent))
 		{
 			enhancedInput->BindAction(ShootingAction, ETriggerEvent::Triggered, this, &UWeaponComponent::Shooting);
-
+			enhancedInput->BindAction(ReloadAction, ETriggerEvent::Started, this, &UWeaponComponent::Reloading);
 		}
 	}
 	
 	if (!listWeapons.IsEmpty())
 	{
+		for (TSubclassOf<UWeaponBase> eachWeapon : listWeapons)
+		{
+			eachWeapon.GetDefaultObject()->countBullet = eachWeapon.GetDefaultObject()->maxCountBullet;
+		}
+
 		ChangeWeapon(listWeapons[0]);
 	}
 
@@ -38,14 +43,15 @@ void UWeaponComponent::BeginPlay()
 
 void UWeaponComponent::ChangeWeapon(TSubclassOf<UWeaponBase> newWeapon)
 {
-	currentWeapon = newWeapon.GetDefaultObject();
 	
-
-	if (!IsValid(currentWeapon))
+	
+	if (!IsValid(newWeapon.GetDefaultObject()))
 	{
 		print("[ERROR - ChangeWeapon] New Weapon Invaliid...");
 		return;
 	}
+
+	currentWeapon = newWeapon.GetDefaultObject();
 
 	if (IsValid(currentWeapon->weaponMesh))
 	{
@@ -57,10 +63,19 @@ void UWeaponComponent::ChangeWeapon(TSubclassOf<UWeaponBase> newWeapon)
 	}
 	
 	clockTimerShooting = currentWeapon->fireRate;
-	currCountBullet = currentWeapon->countBullet;
+	
+	if (isReloading)
+	{
+		StopReloading();
+	}
 
 	printf("weapon name = %s", *currentWeapon->weaponMesh->GetName());
 
+}
+
+UWeaponBase* UWeaponComponent::GetCurrentWeapon()
+{
+	return currentWeapon;
 }
 
 void UWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -79,7 +94,7 @@ void UWeaponComponent::Shooting()
 	}
 
 	
-	if (currCountBullet <= 0)
+	if (currentWeapon->countBullet <= 0)
 	{
 		Reloading();
 		
@@ -101,11 +116,15 @@ void UWeaponComponent::Fire()
 	
 	if (IsValid(currentWeapon->weaponProjectile) && currentWeapon->socketSpawnPoint != "")
 	{
-		print("FIRE!!");
+
+		if (GetAnimInstance() != nullptr && currentWeapon->animShooting != nullptr)
+		{
+			GetAnimInstance()->Montage_Play(currentWeapon->animShooting, 0.7f);
+		}
 
 		GetWorld()->SpawnActor<AProjectileBase>(currentWeapon->weaponProjectile, GetSocketLocation(*currentWeapon->socketSpawnPoint), GetSocketRotation(*currentWeapon->socketSpawnPoint));
 
-		currCountBullet -= 1;
+		currentWeapon->countBullet -= 1;
 	}
 
 	
@@ -117,26 +136,42 @@ void UWeaponComponent::Reloading()
 	{
 		return;
 	}
-
+	
 	if (!GetWorld()->GetTimerManager().IsTimerActive(handleReload))
 	{
+		if (currentWeapon->countBullet >= currentWeapon->maxCountBullet)
+		{
+			return;
+		}
+
 		isReloading = true;		
-		GetWorld()->GetTimerManager().SetTimer(handleReload, this, &UWeaponComponent::Reloading, currentWeapon->reloadingTime);
-		print("Reloading!!");
+		GetWorld()->GetTimerManager().SetTimer(handleReload, this, &UWeaponComponent::Reloading, currentWeapon->animReload->GetSectionLength(0));
+		
+		if (GetAnimInstance() != nullptr && currentWeapon->animReload != nullptr)
+		{
+			GetAnimInstance()->Montage_Play(currentWeapon->animReload, 1.0f);
+		}
 	}
 	else
 	{
-		currCountBullet = currentWeapon->countBullet;
-		isReloading = false;
-		print("AFTER RELOADING");
-		GetWorld()->GetTimerManager().ClearTimer(handleReload);
-
+		if (GetWorld()->GetTimerManager().GetTimerRemaining(handleReload) <= 0)
+		{
+			currentWeapon->countBullet = currentWeapon->maxCountBullet;
+			StopReloading();
+			print("AFTER RELOADING!");
+		}
 	}
 
 
 	
 	
 
+}
+
+void UWeaponComponent::StopReloading()
+{
+	isReloading = false;
+	GetWorld()->GetTimerManager().ClearTimer(handleReload);
 }
 
 

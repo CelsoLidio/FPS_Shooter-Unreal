@@ -18,10 +18,10 @@ public:
 
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "root")
+	UPROPERTY(EditAnywhere, Category = "root")
 	USceneComponent* rootComp;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Projectile")
+	UPROPERTY(EditAnywhere, Category = "Projectile")
 	UStaticMeshComponent* projectileMesh;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Projectile")

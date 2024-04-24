@@ -12,7 +12,7 @@ AProjectileBase::AProjectileBase()
 
 	//Create Objects//
 	rootComp = CreateDefaultSubobject<USceneComponent>(TEXT("RootComp"));
-	rootComp->SetupAttachment(GetRootComponent());
+	rootComp->SetupAttachment(RootComponent);
 
 	projectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
 	projectileMesh->SetupAttachment(rootComp);

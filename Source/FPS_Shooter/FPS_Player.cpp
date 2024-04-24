@@ -2,6 +2,7 @@
 
 
 #include "FPS_Player.h"
+#include "FPS_Controller.h"
 
 // Sets default values
 AFPS_Player::AFPS_Player()
@@ -14,13 +15,9 @@ AFPS_Player::AFPS_Player()
 	CameraFPS->SetupAttachment(GetCapsuleComponent());
 	CameraFPS->bUsePawnControlRotation = true;
 
-
-	//Criando Mesh para os braços
-	//HandsMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("HandsMesh"));
-	//HandsMesh->SetupAttachment(CameraFPS);
-	//HandsMesh->SetRelativeLocationAndRotation(FVector(50.0f, 0.0f, -160.0f), FRotator(0.0f, -90.0f,0.0f));
-
-
+	weaponComponentPlayer = CreateDefaultSubobject<UWeaponComponent>(TEXT("WeaponPlayer"));
+	weaponComponentPlayer->SetupAttachment(CameraFPS);
+	weaponComponentPlayer->SetRelativeLocationAndRotation(FVector(50.0f, 0.0f, -160.0f), FRotator(0.0, 0.0, -90.0f));
 
 	//Init Variables//
 	lookSensibility = 70.0f;
@@ -30,6 +27,11 @@ AFPS_Player::AFPS_Player()
 void AFPS_Player::BeginPlay()
 {
 	Super::BeginPlay();
+
+
+	TArray<USceneComponent*> allChildCamera;
+
+	CameraFPS->GetChildrenComponents(false, allChildCamera);
 
 }
 
@@ -49,7 +51,7 @@ void AFPS_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	{
 		enhancedInput->BindAction(MovementAction, ETriggerEvent::Triggered, this, &AFPS_Player::MovementPlayer);
 		enhancedInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &AFPS_Player::LookPlayer);
-		
+		enhancedInput->BindAction(WeaponChangeAction, ETriggerEvent::Started, this, &AFPS_Player::TradeWeapon);
 	}
 
 
@@ -80,5 +82,50 @@ void AFPS_Player::LookPlayer(const FInputActionValue& valueInput)
 	AddControllerYawInput(axisVector.X);
 	
 	
+}
+
+void AFPS_Player::TradeWeapon(const FInputActionValue& valueInput)
+{
+	
+	int idxWeapon = 0;
+
+	TArray<FKey> listKeyAction = Cast<AFPS_Controller>(GetController())->subsystemController->QueryKeysMappedToAction(WeaponChangeAction);
+	
+	
+	for (FKey eachKey : listKeyAction)
+	{
+		if (Cast<AFPS_Controller>(GetController())->IsInputKeyDown(eachKey))
+		{
+			idxWeapon = listKeyAction.Find(eachKey);
+		}
+		
+	}
+	
+
+	if (weaponComponentPlayer != nullptr)
+	{
+
+		auto newWeapon = weaponComponentPlayer->listWeapons[idxWeapon];
+		
+		
+		if (!IsValid(weaponComponentPlayer->GetCurrentWeapon()) || newWeapon == nullptr)
+		{
+			return;
+		}
+
+		
+
+		if (newWeapon != weaponComponentPlayer->GetCurrentWeapon()->GetClass())
+		{
+			weaponComponentPlayer->ChangeWeapon(newWeapon);
+		}
+		
+	}
+
+}
+
+UWeaponComponent* AFPS_Player::GetWeaponComponentPlayer()
+{
+	return weaponComponentPlayer;
 }
 

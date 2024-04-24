@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
+#include "GameFramework/Actor.h"
+//#include "UObject/NoExportTypes.h"
 #include "ProjectileBase.h"
 #include "WeaponBase.generated.h"
 
@@ -38,17 +39,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting Configuration")
 	float reloadingTime;
 
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting Configuration")
-	int countBullet;
+	int maxCountBullet;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting Configuration")
 	FString socketSpawnPoint;
 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* animShooting;
 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* animReload;
 
 	
-
+	int countBullet;
 
 };

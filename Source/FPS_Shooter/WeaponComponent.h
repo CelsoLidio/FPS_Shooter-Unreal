@@ -18,7 +18,7 @@ class AProjectileBase;
 /**
  * 
  */
-UCLASS(ClassGroup=(Custom), meta = (BlueprintSpawnableComponent))
+UCLASS(Blueprintable,ClassGroup=(Custom), meta = (BlueprintSpawnableComponent))
 class FPS_SHOOTER_API UWeaponComponent : public USkeletalMeshComponent
 {
 	GENERATED_BODY()
@@ -27,12 +27,15 @@ class FPS_SHOOTER_API UWeaponComponent : public USkeletalMeshComponent
 private:
 
 	UWeaponBase* currentWeapon;
-	int currCountBullet;
 	float clockTimerShooting;
-	
-	//Reloading Weapon//
-	bool isReloading;
 	FTimerHandle handleReload;
+	bool isReloading;
+public:
+
+	//Reloading Weapon//
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reload")
+	bool isTradeWeapon;
+	
 
 
 public:
@@ -43,8 +46,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 	class UInputAction* ShootingAction;
 
+	//Reloding Action//
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	class UInputAction* ReloadAction;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Adjust Weapons")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TArray<TSubclassOf<UWeaponBase>> listWeapons;
 
 
@@ -53,16 +59,21 @@ private:
 	void Shooting();
 	void Fire();
 	void Reloading();
+	void StopReloading();
 
 protected:
 
 	virtual void BeginPlay() override;
 
-	UFUNCTION(BlueprintCallable, Category = "Adjust Weapons")
-	void ChangeWeapon(TSubclassOf<UWeaponBase> newWeapon);
+	
 
 public:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void ChangeWeapon(TSubclassOf<UWeaponBase> newWeapon);
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	UWeaponBase* GetCurrentWeapon();
 };

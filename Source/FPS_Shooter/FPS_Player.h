@@ -12,6 +12,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubSystems.h"
 #include "PrintStrings.h"
+#include "WeaponComponent.h"
 
 #include "FPS_Player.generated.h"
 
@@ -31,10 +32,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* CameraFPS;
 
-	//Mesh Hands//
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Body")
-	//USkeletalMeshComponent* HandsMesh;
-
 	//Actions player input//
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* MovementAction;
@@ -42,6 +39,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* LookAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UInputAction* WeaponChangeAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WeaponPlayer")
+	UWeaponComponent* weaponComponentPlayer;
 
 protected:
 	// Called when the game starts or when spawned
@@ -49,6 +51,11 @@ protected:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category= "Camera")
 	float lookSensibility;
+
+private:
+
+	
+
 
 public:	
 	// Called every frame
@@ -61,7 +68,12 @@ public:
 	//Actions Method//
 	void MovementPlayer(const FInputActionValue& valueInput);
 	void LookPlayer(const FInputActionValue& valueInput);
+	void TradeWeapon(const FInputActionValue& valueInput);
 
 
+private:
+
+	UFUNCTION(BlueprintCallable, Category = "WeaponPlayer")
+	UWeaponComponent* GetWeaponComponentPlayer();
 
 };

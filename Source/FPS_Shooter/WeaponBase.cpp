@@ -2,12 +2,13 @@
 
 
 #include "WeaponBase.h"
+#include "PrintStrings.h"
 
 UWeaponBase::UWeaponBase()
 {
 	fireRate = 0.5f;
 	reloadingTime = 1.2f;
-	countBullet = 10;
+	maxCountBullet = 10;
 	socketSpawnPoint = "socketSpawnBullet";
 
 }
