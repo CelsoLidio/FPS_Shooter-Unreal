@@ -13,6 +13,8 @@
 #include "EnhancedInputSubSystems.h"
 #include "PrintStrings.h"
 #include "WeaponComponent.h"
+#include "Components/TimelineComponent.h"
+
 
 #include "FPS_Player.generated.h"
 
@@ -28,13 +30,26 @@ public:
 	// Sets default values for this character's properties
 	AFPS_Player();
 
-	//Camera Character//
+	//Components Player//
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* CameraFPS;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WeaponPlayer")
+	UWeaponComponent* weaponComponentPlayer;
+
 
 	//Actions player input//
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* MovementAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UInputAction* JumpAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UInputAction* SprintAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UInputAction* CrouchAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* LookAction;
@@ -42,20 +57,38 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* WeaponChangeAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WeaponPlayer")
-	UWeaponComponent* weaponComponentPlayer;
+
+	//Expose BP Variables//
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
+	float sprintSpeed;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
+	float normalSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	float lookSensibility;
+
+	//Crouch//
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Crouch")
+	FVector crouchEyeOffSet;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Crouch")
+	float crouchSpeed;
+
+	
+private:
+
+	//Private Variables//
+	bool isSprint;
+	bool isJumping;
+	bool isCrouched;
+	float defaultHalfHeight;
+	
+
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category= "Camera")
-	float lookSensibility;
-
-private:
-
-	
-
 
 public:	
 	// Called every frame
@@ -64,12 +97,24 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void OnStartCrouch(float halfHeightAdjust, float scaledHalfHeightAdjust) override;
+
+	void OnEndCrouch(float halfHeightAdjust, float scaledHalfHeightAdjust) override;
+
+	void CalcCamera(float DeltaTime, struct FMinimalViewInfo& OutResult) override;
+
+
+private:
 
 	//Actions Method//
 	void MovementPlayer(const FInputActionValue& valueInput);
 	void LookPlayer(const FInputActionValue& valueInput);
 	void SelectWeapon(const FInputActionValue& valueInput);
+	void JumpPlayer(const FInputActionValue& valueInput);
+	void Sprint(const FInputActionValue& valueInput);
+	void CrouchPlayer(const FInputActionValue& valueInput);
 
+	//Others Private Methods//
 
 private:
 

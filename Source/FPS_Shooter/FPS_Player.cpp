@@ -3,13 +3,14 @@
 
 #include "FPS_Player.h"
 #include "FPS_Controller.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AFPS_Player::AFPS_Player()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	
 	//Criando Camera FPS
 	CameraFPS = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraFPS"));
 	CameraFPS->SetupAttachment(GetCapsuleComponent());
@@ -21,6 +22,15 @@ AFPS_Player::AFPS_Player()
 
 	//Init Variables//
 	lookSensibility = 70.0f;
+	isSprint = false;
+	isJumping = false;
+	normalSpeed = 600.0f;
+	sprintSpeed = 1000.0f;	
+	
+	crouchEyeOffSet = FVector::Zero();
+	crouchSpeed = 100.0f;
+
+	
 }
 
 // Called when the game starts or when spawned
@@ -32,14 +42,18 @@ void AFPS_Player::BeginPlay()
 	TArray<USceneComponent*> allChildCamera;
 
 	CameraFPS->GetChildrenComponents(false, allChildCamera);
-
+	GetCharacterMovement()->MaxWalkSpeed = normalSpeed;
 }
+
+
 
 // Called every frame
 void AFPS_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	float crouchTime = FMath::Min(1.0f, crouchSpeed * DeltaTime);
+	crouchEyeOffSet = (1.0f - crouchTime) * crouchEyeOffSet;
 }
 
 // Called to bind functionality to input
@@ -52,11 +66,62 @@ void AFPS_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		enhancedInput->BindAction(MovementAction, ETriggerEvent::Triggered, this, &AFPS_Player::MovementPlayer);
 		enhancedInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &AFPS_Player::LookPlayer);
 		enhancedInput->BindAction(WeaponChangeAction, ETriggerEvent::Started, this, &AFPS_Player::SelectWeapon);
+		
+		enhancedInput->BindAction(JumpAction, ETriggerEvent::Started, this, &AFPS_Player::JumpPlayer);
+		enhancedInput->BindAction(JumpAction, ETriggerEvent::Completed, this, &AFPS_Player::JumpPlayer);
+		
+		enhancedInput->BindAction(SprintAction, ETriggerEvent::Started, this, &AFPS_Player::Sprint);
+		enhancedInput->BindAction(SprintAction, ETriggerEvent::Completed, this, &AFPS_Player::Sprint);
+
+		enhancedInput->BindAction(CrouchAction, ETriggerEvent::Started, this, &AFPS_Player::CrouchPlayer);
+		enhancedInput->BindAction(CrouchAction, ETriggerEvent::Completed, this, &AFPS_Player::CrouchPlayer);
+
+
 	}
 
 
 
 }
+
+void AFPS_Player::OnStartCrouch(float halfHeightAdjust, float scaledHalfHeightAdjust)
+{
+	if (halfHeightAdjust == 0.0f)
+	{
+		return;
+	}
+
+	float startBaseEyeHeight = BaseEyeHeight;
+	Super::OnStartCrouch(halfHeightAdjust, scaledHalfHeightAdjust);
+	crouchEyeOffSet.Z += startBaseEyeHeight - BaseEyeHeight + halfHeightAdjust;
+	CameraFPS->SetRelativeLocation(FVector(0.0f, 0.0f, BaseEyeHeight));
+
+}
+
+void AFPS_Player::OnEndCrouch(float halfHeightAdjust, float scaledHalfHeightAdjust)
+{
+	if (halfHeightAdjust == 0.0f)
+	{
+		return;
+
+	}
+
+	float startBaseEyeHeight = BaseEyeHeight;
+	Super::OnEndCrouch(halfHeightAdjust, scaledHalfHeightAdjust);
+	crouchEyeOffSet.Z += startBaseEyeHeight - BaseEyeHeight - halfHeightAdjust;
+	CameraFPS->SetRelativeLocation(FVector(0.0f, 0.0f, BaseEyeHeight), false);
+}
+
+void AFPS_Player::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
+{
+	if (CameraFPS)
+	{
+		CameraFPS->GetCameraView(DeltaTime, OutResult);
+		OutResult.Location += crouchEyeOffSet;
+	}
+
+}
+
+
 
 void AFPS_Player::MovementPlayer(const FInputActionValue& valueInput)
 {
@@ -83,6 +148,45 @@ void AFPS_Player::LookPlayer(const FInputActionValue& valueInput)
 	
 	
 }
+
+void AFPS_Player::JumpPlayer(const FInputActionValue& valueInput)
+{
+	if (!isJumping)
+	{
+		Jump();
+	}
+	else
+	{
+		StopJumping();
+	}
+	isJumping = !isJumping;
+}
+
+void AFPS_Player::Sprint(const FInputActionValue& valueInput)
+{
+	isSprint = !isSprint;
+
+	GetCharacterMovement()->MaxWalkSpeed = (isSprint) ? sprintSpeed : normalSpeed;
+
+}
+
+void AFPS_Player::CrouchPlayer(const FInputActionValue& valueInput)
+{
+	
+	
+	if (!isCrouched)
+	{
+		Crouch();
+	}
+	else
+	{
+		UnCrouch();
+	}
+
+	isCrouched = !isCrouched;
+}
+
+
 
 void AFPS_Player::SelectWeapon(const FInputActionValue& valueInput)
 {
@@ -123,6 +227,7 @@ void AFPS_Player::SelectWeapon(const FInputActionValue& valueInput)
 	}
 
 }
+
 
 UWeaponComponent* AFPS_Player::GetWeaponComponentPlayer()
 {

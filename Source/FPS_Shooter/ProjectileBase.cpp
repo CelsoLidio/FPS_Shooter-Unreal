@@ -23,7 +23,7 @@ AProjectileBase::AProjectileBase()
 	
 
 	//Default Variables//
-	projectileSpeed = 2000.0f;
+	projectileSpeed = 6000.0f;
 	projectileMovement->ProjectileGravityScale = 0.0f;
 	projectileMovement->InitialSpeed = projectileSpeed;
 	projectileMovement->MaxSpeed = projectileSpeed;
