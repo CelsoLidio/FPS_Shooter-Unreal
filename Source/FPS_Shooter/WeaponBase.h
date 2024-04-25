@@ -54,7 +54,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* animReload;
 
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	USoundBase* shootSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	USoundBase* reloadSound;
+
 	int countBullet;
 
 };

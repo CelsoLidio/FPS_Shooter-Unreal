@@ -94,7 +94,7 @@ void UWeaponComponent::Fire()
 		}
 
 		GetWorld()->SpawnActor<AProjectileBase>(currentWeapon->weaponProjectile, GetSocketLocation(*currentWeapon->socketSpawnPoint), GetSocketRotation(*currentWeapon->socketSpawnPoint));
-
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), currentWeapon->shootSound, GetSocketLocation(*currentWeapon->socketSpawnPoint));
 		currentWeapon->countBullet -= 1;
 	}
 
@@ -189,6 +189,7 @@ void UWeaponComponent::Reloading()
 		if (GetAnimInstance() != nullptr && currentWeapon->animReload != nullptr)
 		{
 			GetAnimInstance()->Montage_Play(currentWeapon->animReload, 1.0f);
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), currentWeapon->reloadSound,GetComponentLocation(),1.0f,0.8f);
 		}
 	}
 	else
