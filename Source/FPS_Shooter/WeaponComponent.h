@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "WeaponBase.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Components/PawnNoiseEmitterComponent.h"
 
 #include "WeaponComponent.generated.h"
 

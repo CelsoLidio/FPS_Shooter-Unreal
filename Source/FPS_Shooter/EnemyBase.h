@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Perception/AIPerceptionComponent.h"
 #include "EnemyAI_Interface.h"
+
 #include "EnemyBase.generated.h"
 
 
@@ -51,4 +53,8 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Animation")
 	void OnDying();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Animation")
+	void OnDamage(AController* damageCauser);
+
 };

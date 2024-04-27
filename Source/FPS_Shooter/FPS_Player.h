@@ -76,6 +76,12 @@ public:
 	float crouchSpeed;
 
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerProperty")
+	float maxHealth;
+
+	UPROPERTY(BlueprintReadWrite, Category = "PlayerProperty")
+	float currentHealth;
+
 private:
 
 	//Private Variables//
@@ -97,12 +103,16 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual float TakeDamage(float damageAmount, struct FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser) override;
+
 	void OnStartCrouch(float halfHeightAdjust, float scaledHalfHeightAdjust) override;
 
 	void OnEndCrouch(float halfHeightAdjust, float scaledHalfHeightAdjust) override;
 
 	void CalcCamera(float DeltaTime, struct FMinimalViewInfo& OutResult) override;
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "StatePlayer")
+	void OnDying();
 
 private:
 
@@ -120,5 +130,6 @@ private:
 
 	UFUNCTION(BlueprintCallable, Category = "WeaponPlayer")
 	UWeaponComponent* GetWeaponComponentPlayer();
+
 
 };

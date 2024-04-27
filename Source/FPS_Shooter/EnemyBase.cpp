@@ -2,6 +2,8 @@
 
 
 #include "EnemyBase.h"
+#include "Kismet/GameplayStatics.h"
+
 #include "PrintStrings.h"
 
 // Sets default values
@@ -28,7 +30,7 @@ void AEnemyBase::BeginPlay()
 void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 }
 
 // Called to bind functionality to input
@@ -43,16 +45,20 @@ float AEnemyBase::TakeDamage(float damageAmount, FDamageEvent const& damageEvent
 
 	currentHealth -= damageAmount;
 	GetMesh()->GetAnimInstance()->Montage_Play(animTakeDamage,0.5f);
-
+	OnDamage(eventInstigator);
 
 	if (currentHealth <= 0)
 	{
 		OnDying();
 	}
-
+	
 	printf("Current life = %f", currentHealth);
 
 	return damageAmount;
+}
+
+void AEnemyBase::OnDamage_Implementation(AController* damageCauser)
+{
 }
 
 void AEnemyBase::OnDying_Implementation()

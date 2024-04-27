@@ -92,10 +92,17 @@ void UWeaponComponent::Fire()
 		{
 			GetAnimInstance()->Montage_Play(currentWeapon->animShooting, 0.7f);
 		}
-
+		
+		
+		
 		GetWorld()->SpawnActor<AProjectileBase>(currentWeapon->weaponProjectile, GetSocketLocation(*currentWeapon->socketSpawnPoint), GetSocketRotation(*currentWeapon->socketSpawnPoint));
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), currentWeapon->shootSound, GetSocketLocation(*currentWeapon->socketSpawnPoint));
 		currentWeapon->countBullet -= 1;
+
+		
+		GetOwner()->MakeNoise(1.0f, UGameplayStatics::GetPlayerPawn(GetWorld(), 0), GetOwner()->GetActorLocation(), 0.0f);
+
+
 	}
 
 	

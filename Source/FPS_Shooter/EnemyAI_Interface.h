@@ -22,6 +22,7 @@ enum class EAIMoveSpeed : uint8
 {
 	Idle,
 	Walking,
+	Jogging,
 	Sprinting
 };
 

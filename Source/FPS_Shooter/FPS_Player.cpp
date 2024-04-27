@@ -29,7 +29,7 @@ AFPS_Player::AFPS_Player()
 	
 	crouchEyeOffSet = FVector::Zero();
 	crouchSpeed = 100.0f;
-
+	maxHealth = 100.0f;
 	
 }
 
@@ -43,6 +43,7 @@ void AFPS_Player::BeginPlay()
 
 	CameraFPS->GetChildrenComponents(false, allChildCamera);
 	GetCharacterMovement()->MaxWalkSpeed = normalSpeed;
+	currentHealth = maxHealth;
 }
 
 
@@ -82,6 +83,8 @@ void AFPS_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 
 }
+
+
 
 void AFPS_Player::OnStartCrouch(float halfHeightAdjust, float scaledHalfHeightAdjust)
 {
@@ -232,5 +235,26 @@ void AFPS_Player::SelectWeapon(const FInputActionValue& valueInput)
 UWeaponComponent* AFPS_Player::GetWeaponComponentPlayer()
 {
 	return weaponComponentPlayer;
+}
+
+
+
+float AFPS_Player::TakeDamage(float damageAmount, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser)
+{
+	currentHealth -= damageAmount;
+
+	if (currentHealth <= 0)
+	{
+		OnDying();
+	}
+
+	printf("Current life = %f", currentHealth);
+
+	return damageAmount;
+}
+
+
+void AFPS_Player::OnDying_Implementation()
+{
 }
 

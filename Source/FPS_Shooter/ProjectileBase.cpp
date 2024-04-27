@@ -4,6 +4,7 @@
 #include "ProjectileBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "EnemyBase.h"
+#include "FPS_Player.h"
 
 #include "PrintStrings.h"
 
@@ -64,12 +65,11 @@ void AProjectileBase::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
 	{
 		
 
-		if (Cast<AEnemyBase>(OtherActor))
+		if (Cast<AEnemyBase>(OtherActor) || Cast<AFPS_Player>(OtherActor))
 		{
-			AEnemyBase* myEnemy = Cast<AEnemyBase>(OtherActor);
-			AController* pController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+			AController* pController = OtherActor->GetInstigator()->GetController();//UGameplayStatics::GetPlayerController(GetWorld(), 0);
 			
-			UGameplayStatics::ApplyDamage(myEnemy, valueDamage, pController,this, damageType);
+			UGameplayStatics::ApplyDamage(OtherActor, valueDamage, pController,this, damageType);
 		}
 
 		
